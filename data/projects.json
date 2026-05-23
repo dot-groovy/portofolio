@@ -1,0 +1,36 @@
+[
+  {
+    "id": "001",
+    "title": "Finance Dashboard",
+    "description": "A real-time financial tracking dashboard built with React and D3.js. Displays portfolio performance, market trends, and customizable alerts.",
+    "tags": ["React", "D3.js", "TypeScript"],
+    "date": "2026-02-10",
+    "url": "https://example.com/finance",
+    "github": "https://github.com/example/finance"
+  },
+  {
+    "id": "002",
+    "title": "Weather CLI",
+    "description": "A minimalist command-line weather tool written in Go. Fetches data from OpenWeather API and displays it with ASCII art.",
+    "tags": ["Go", "CLI"],
+    "date": "2025-11-20",
+    "github": "https://github.com/example/weather-cli"
+  },
+  {
+    "id": "003",
+    "title": "Note App",
+    "description": "Full-stack note-taking application with real-time sync, markdown support, and offline capabilities using service workers.",
+    "tags": ["Next.js", "PostgreSQL", "TypeScript"],
+    "date": "2025-08-15",
+    "url": "https://example.com/notes",
+    "github": "https://github.com/example/notes"
+  },
+  {
+    "id": "004",
+    "title": "Pixel Art Editor",
+    "description": "Browser-based pixel art editor with layers, animation timeline, and export to PNG/GIF. Built with Canvas API.",
+    "tags": ["TypeScript", "Canvas API"],
+    "date": "2025-05-02",
+    "github": "https://github.com/example/pixel"
+  }
+]
