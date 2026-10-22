@@ -2,21 +2,30 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { getProjectById } from "@/lib/projects";
+import { getProjectById, getProjects } from "@/lib/projects";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+/** Gera uma página estática por projeto (necessário para GitHub Pages). */
+export function generateStaticParams() {
+  return getProjects().map((project) => ({ id: project.id }));
+}
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * Página de detalhe de um projeto (rota `/project/[id]`).
+ * Procura o projeto pelo `id` da URL; se não existir, devolve 404.
+ * Mostra título, data, tags, imagem (opcional), descrição e links externos.
+ */
 export default async function ProjectPage({ params }: Props) {
   const { id } = await params;
   const project = getProjectById(id);
 
   if (!project) notFound();
 
+  // Formata a data por extenso (ex.: "February 10, 2026").
   const date = new Date(project.date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",

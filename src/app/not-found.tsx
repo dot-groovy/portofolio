@@ -2,6 +2,9 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
+/**
+ * Página 404. Mostrada quando a rota não existe ou `notFound()` é chamado.
+ */
 export default function NotFound() {
   return (
     <div className="page-wrapper">

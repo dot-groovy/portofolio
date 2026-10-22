@@ -1,3 +1,7 @@
+/**
+ * Representa um projeto do portfólio.
+ * Os campos `url`, `github` e `image` são opcionais.
+ */
 export interface Project {
   id: string;
   title: string;

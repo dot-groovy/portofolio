@@ -3,8 +3,10 @@ import Footer from "@/components/Footer";
 import Timeline from "@/components/Timeline";
 import { getProjects } from "@/lib/projects";
 
-export const dynamic = "force-dynamic";
-
+/**
+ * Página inicial. Carrega todos os projetos e mostra-os numa timeline,
+ * com um texto de introdução e a contagem total.
+ */
 export default function Home() {
   const projects = getProjects();
 

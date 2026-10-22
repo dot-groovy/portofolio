@@ -1,3 +1,6 @@
+/**
+ * Rodapé do site. Mostra o ano atual e links para GitHub e LinkedIn.
+ */
 export default function Footer() {
   const year = new Date().getFullYear();
 
