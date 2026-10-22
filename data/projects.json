@@ -1,12 +1,11 @@
 [
   {
     "id": "001",
-    "title": "Finance Dashboard",
-    "description": "A real-time financial tracking dashboard built with React and D3.js. Displays portfolio performance, market trends, and customizable alerts.",
-    "tags": ["React", "D3.js", "TypeScript"],
-    "date": "2026-02-10",
-    "url": "https://example.com/finance",
-    "github": "https://github.com/example/finance"
+    "title": "Fleet Management",
+    "description": "ASP.NET Core MVC app to manage drivers, vehicles, and maintenance records. Role-based access (Admin/User), SQL Server with EF Core migrations, stored procedures, delete-audit triggers, and PDF exports with optional email delivery.",
+    "tags": ["ASP.NET Core", "C#", "SQL Server", "Entity Framework", "Identity"],
+    "date": "2026-05-14",
+    "github": "https://github.com/dot-groovy/GestaoFrota"
   },
   {
     "id": "002",
