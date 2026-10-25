@@ -12,10 +12,10 @@ interface Props {
  * O `index` controla o atraso da animação de entrada (stagger).
  */
 export default function ProjectEntry({ project, index }: Props) {
-  // Formata a data como "mmm dd" (ex.: "feb 10").
+  // Formata a data como "mmm yyyy" (ex.: "may 2026").
   const date = new Date(project.date);
   const formatted = date
-    .toLocaleDateString("en-US", { month: "short", day: "2-digit" })
+    .toLocaleDateString("en-US", { month: "short", year: "numeric" })
     .toLowerCase();
 
   // Só os primeiros 8 itens têm animação escalonada.

@@ -9,9 +9,14 @@ const repo = "portofolio";
 const isGhPages = process.env.GITHUB_PAGES === "true";
 
 // Configuração do Next.js.
+const basePath = isGhPages ? `/${repo}` : "";
+
 const nextConfig: NextConfig = {
   devIndicators: false,
   outputFileTracingRoot: path.join(__dirname),
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   ...(isGhPages
     ? {
         output: "export",

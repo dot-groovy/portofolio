@@ -9,16 +9,10 @@ npm install
 npm run dev
 ```
 
-## Publicar no GitHub Pages
+## Porque GithubPages
+O GitHub Pages não precisa de construir uma página diferente de cada vez que alguém a visita. Entrega os ficheiros que já estão preparados.
 
-1. Faz push para a branch `main` (o workflow `.github/workflows/deploy-pages.yml` faz o build e deploy).
-2. No GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Site público: **https://dot-groovy.github.io/portofolio/** (o repo no GitHub tem de chamar-se `portofolio`).
+E o que é um site dinâmico?
+Um site dinâmico pode precisar de executar código num servidor e consultar uma base de dados para produzir o conteúdo que vai mostrar.
 
-Para testar o build estático localmente:
-
-```bash
-npm run build:pages
-```
-
-Os ficheiros gerados ficam em `out/`.
+Quando alguém abre o teu link, o browser pede ficheiros que já existem no repositório (ou numa branch gerada no deploy)

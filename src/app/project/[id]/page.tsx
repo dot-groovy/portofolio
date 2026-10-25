@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ProjectMediaCarousel from "@/components/ProjectMediaCarousel";
 import { getProjectById, getProjects } from "@/lib/projects";
 import { notFound } from "next/navigation";
 
@@ -25,12 +26,15 @@ export default async function ProjectPage({ params }: Props) {
 
   if (!project) notFound();
 
-  // Formata a data por extenso (ex.: "February 10, 2026").
+  // Formata a data como mês e ano (ex.: "May 2026").
   const date = new Date(project.date).toLocaleDateString("en-US", {
-    year: "numeric",
     month: "long",
-    day: "numeric",
+    year: "numeric",
   });
+
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  const hasCarousel =
+    (project.images?.length ?? 0) > 0 || Boolean(project.video);
 
   return (
     <div className="page-wrapper">
@@ -47,7 +51,7 @@ export default async function ProjectPage({ params }: Props) {
           <span>{project.tags.join(" / ")}</span>
         </div>
 
-        {project.image && (
+        {!hasCarousel && project.image && (
           <div className="project-detail-image">
             <Image
               src={project.image}
@@ -83,6 +87,15 @@ export default async function ProjectPage({ params }: Props) {
             </a>
           )}
         </div>
+
+        {hasCarousel && (
+          <ProjectMediaCarousel
+            basePath={basePath}
+            title={project.title}
+            images={project.images}
+            video={project.video}
+          />
+        )}
       </main>
       <Footer />
     </div>
