@@ -34,7 +34,9 @@ export default async function ProjectPage({ params }: Props) {
 
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   const hasCarousel =
-    (project.images?.length ?? 0) > 0 || Boolean(project.video);
+    (project.images?.length ?? 0) > 0 ||
+    (project.videos?.length ?? 0) > 0 ||
+    Boolean(project.video);
 
   return (
     <div className="page-wrapper">
@@ -94,6 +96,7 @@ export default async function ProjectPage({ params }: Props) {
             title={project.title}
             images={project.images}
             video={project.video}
+            videos={project.videos}
           />
         )}
       </main>

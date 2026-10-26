@@ -16,4 +16,6 @@ export interface Project {
   images?: string[];
   /** Caminho em `public/` (ex.: `/videos/demo.mp4`). */
   video?: string;
+  /** Vários vídeos no carrossel (antes das imagens). Se vazio, usa `video`. */
+  videos?: string[];
 }

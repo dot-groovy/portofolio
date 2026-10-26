@@ -17,9 +17,19 @@
   {
     "id": "002",
     "title": "LocalApp",
-    "description": "Privacy-first Expo mobile app that tracks your day in the background: GPS routes, visit duration, and walking vs driving detection. Data stays on-device in SQLite (no server). Includes timeline, map with routes, daily summaries, and dashboard charts. Resumes tracking after reboot via background location tasks.",
+    "description": "Mobile application that tracks your day in the background: GPS routes, visit duration, and detection of travel on foot or by transport. Data is stored locally on the device using SQLite. Includes a timeline detailing your routes, a map displaying routes, daily summaries, and dashboard charts. Resumes tracking after the device restarts through background location tasks.",
     "tags": ["Expo", "React Native", "TypeScript", "SQLite", "GPS"],
     "date": "2026-06",
-    "github": "https://github.com/dot-groovy/mobileLocalapp"
+    "github": "https://github.com/dot-groovy/mobileLocalapp",
+    "videos": [
+      "/videos/local-app/Video1.mp4",
+      "/videos/local-app/Video2.mp4"
+    ],
+    "images": [
+      "/images/local-app/Image1.jpeg",
+      "/images/local-app/Image2.jpeg",
+      "/images/local-app/Image3.jpeg",
+      "/images/local-app/Image4.jpeg"
+    ]
   }
 ]

@@ -7,6 +7,7 @@ interface Props {
   title: string;
   images?: string[];
   video?: string;
+  videos?: string[];
 }
 
 type Slide =
@@ -21,11 +22,14 @@ export default function ProjectMediaCarousel({
   title,
   images = [],
   video,
+  videos,
 }: Props) {
   const slides = useMemo<Slide[]>(() => {
     const list: Slide[] = [];
-    if (video) {
-      list.push({ kind: "video", src: `${basePath}${video}` });
+    const videoPaths =
+      videos && videos.length > 0 ? videos : video ? [video] : [];
+    for (const path of videoPaths) {
+      list.push({ kind: "video", src: `${basePath}${path}` });
     }
     list.push(
       ...images.map((path, i) => ({
@@ -35,7 +39,7 @@ export default function ProjectMediaCarousel({
       }))
     );
     return list;
-  }, [basePath, images, video, title]);
+  }, [basePath, images, video, videos, title]);
 
   const [index, setIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
