@@ -18,4 +18,6 @@ export interface Project {
   video?: string;
   /** Vários vídeos no carrossel (antes das imagens). Se vazio, usa `video`. */
   videos?: string[];
+  /** Zoom ampliado para media vertical (ex.: gravações de telemóvel). */
+  mediaZoom?: "mobile";
 }

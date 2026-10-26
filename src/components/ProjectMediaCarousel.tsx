@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
 
 interface Props {
   basePath: string;
@@ -8,6 +15,8 @@ interface Props {
   images?: string[];
   video?: string;
   videos?: string[];
+  /** Media vertical (telemóvel): zoom e carrossel mais altos. */
+  mediaZoom?: "mobile";
 }
 
 type Slide =
@@ -15,7 +24,7 @@ type Slide =
   | { kind: "video"; src: string };
 
 /**
- * Carrossel simples: vídeo primeiro, depois imagens. Clique abre vista ampliada.
+ * Carrossel: vídeo primeiro, depois imagens. Clique abre zoom; clique no fundo fecha.
  */
 export default function ProjectMediaCarousel({
   basePath,
@@ -23,7 +32,15 @@ export default function ProjectMediaCarousel({
   images = [],
   video,
   videos,
+  mediaZoom,
 }: Props) {
+  const isMobileMedia = mediaZoom === "mobile";
+  const slideClass = isMobileMedia
+    ? "project-media-slide project-media-slide--mobile"
+    : "project-media-slide";
+  const zoomMediaClass = isMobileMedia
+    ? "project-media-zoom-media project-media-zoom-media--mobile"
+    : "project-media-zoom-media";
   const slides = useMemo<Slide[]>(() => {
     const list: Slide[] = [];
     const videoPaths =
@@ -43,8 +60,10 @@ export default function ProjectMediaCarousel({
 
   const [index, setIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const lightboxVideoRef = useRef<HTMLVideoElement>(null);
+  const resumeTimeRef = useRef(0);
 
   const go = useCallback(
     (next: number) => {
@@ -58,12 +77,19 @@ export default function ProjectMediaCarousel({
     go(index + 1);
   }, [go, index]);
 
-  const openLightbox = useCallback(() => {
+  const openZoom = useCallback(() => {
+    if (slides[index]?.kind === "video" && videoRef.current) {
+      resumeTimeRef.current = videoRef.current.currentTime;
+    }
     setExpanded(true);
+  }, [index, slides]);
+
+  const closeZoom = useCallback(() => {
+    setExpanded(false);
   }, []);
 
-  const closeLightbox = useCallback(() => {
-    setExpanded(false);
+  useEffect(() => {
+    setPortalReady(true);
   }, []);
 
   useEffect(() => {
@@ -89,56 +115,63 @@ export default function ProjectMediaCarousel({
     if (!expanded) return;
     const el = lightboxVideoRef.current;
     if (!el || slides[index]?.kind !== "video") return;
+    el.currentTime = resumeTimeRef.current;
     void el.play().catch(() => {
       el.muted = true;
       void el.play();
     });
   }, [expanded, index, slides]);
 
+  const goInZoom = useCallback(
+    (next: number) => {
+      resumeTimeRef.current = 0;
+      go(next);
+    },
+    [go]
+  );
+
   useEffect(() => {
     if (!expanded) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowLeft") go(index - 1);
-      if (e.key === "ArrowRight") go(index + 1);
+      if (e.key === "Escape") closeZoom();
+      if (slides.length <= 1) return;
+      if (e.key === "ArrowLeft") goInZoom(index - 1);
+      if (e.key === "ArrowRight") goInZoom(index + 1);
     };
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [closeLightbox, expanded, go, index]);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [closeZoom, expanded, goInZoom, index, slides.length]);
 
   if (slides.length === 0) return null;
 
   const slide = slides[index];
   const showControls = slides.length > 1;
 
-  const renderSlide = (
-    current: Slide,
-    opts: { large?: boolean; videoRef?: React.RefObject<HTMLVideoElement | null> }
-  ) => {
-    const className = opts.large
-      ? "project-media-slide project-media-slide--large"
-      : "project-media-slide";
+  const stopMediaClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
+  const renderCarouselSlide = (current: Slide) => {
     if (current.kind === "image") {
       return (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={current.src} alt={current.alt} className={className} />
+        <img
+          src={current.src}
+          alt={current.alt}
+          className={slideClass}
+        />
       );
     }
 
     return (
       <video
-        ref={opts.videoRef}
+        ref={videoRef}
         key={current.src}
         src={current.src}
-        className={className}
-        controls={opts.large}
+        className={slideClass}
         controlsList="nofullscreen"
         autoPlay
+        muted
         preload="auto"
         playsInline
         onEnded={goNext}
@@ -146,94 +179,138 @@ export default function ProjectMediaCarousel({
     );
   };
 
-  const renderControls = (className?: string) =>
-    showControls && (
-      <div className={className ?? "project-media-carousel-controls"}>
-        <button
-          type="button"
-          className="project-media-carousel-btn"
-          onClick={() => go(index - 1)}
-          aria-label="Previous slide"
-        >
-          ←
-        </button>
-        <div className="project-media-carousel-dots" role="tablist">
-          {slides.map((s, i) => (
+  const renderZoomSlide = (current: Slide) => {
+    if (current.kind === "image") {
+      return (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={current.src}
+          alt={current.alt}
+          className={zoomMediaClass}
+          onClick={stopMediaClick}
+        />
+      );
+    }
+
+    return (
+      <video
+        ref={lightboxVideoRef}
+        key={`zoom-${current.src}`}
+        src={current.src}
+        className={zoomMediaClass}
+        controls
+        controlsList="nofullscreen"
+        preload="auto"
+        playsInline
+        onClick={stopMediaClick}
+      />
+    );
+  };
+
+  const zoomLayer =
+    expanded &&
+    portalReady &&
+    createPortal(
+      <div
+        className="project-media-zoom"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Enlarged media"
+      >
+        {showControls && (
+          <>
             <button
-              key={`${s.kind}-${s.src}`}
               type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={s.kind === "video" ? "Video" : `Image ${i + 1}`}
-              className={`project-media-carousel-dot${i === index ? " is-active" : ""}`}
-              onClick={() => setIndex(i)}
-            />
-          ))}
-        </div>
-        <button
-          type="button"
-          className="project-media-carousel-btn"
-          onClick={() => go(index + 1)}
-          aria-label="Next slide"
+              className="project-media-zoom-arrow project-media-zoom-arrow--prev"
+              onClick={(e) => {
+                e.stopPropagation();
+                goInZoom(index - 1);
+              }}
+              aria-label="Previous slide"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              className="project-media-zoom-arrow project-media-zoom-arrow--next"
+              onClick={(e) => {
+                e.stopPropagation();
+                goInZoom(index + 1);
+              }}
+              aria-label="Next slide"
+            >
+              →
+            </button>
+          </>
+        )}
+        <div
+          className="project-media-zoom-scroll"
+          onClick={closeZoom}
+          role="presentation"
         >
-          →
-        </button>
-      </div>
+          <div className="project-media-zoom-content">
+            {renderZoomSlide(slide)}
+          </div>
+        </div>
+      </div>,
+      document.body
     );
 
   return (
     <>
-      <div className="project-media-carousel">
+      <div
+        className={`project-media-carousel${isMobileMedia ? " project-media-carousel--mobile" : ""}`}
+      >
         <div
           role="button"
           tabIndex={0}
-          className="project-media-carousel-viewport"
-          onClick={openLightbox}
+          className={`project-media-carousel-viewport project-media-carousel-viewport--zoomable${isMobileMedia ? " project-media-carousel-viewport--mobile" : ""}`}
+          onClick={openZoom}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              openLightbox();
+              openZoom();
             }
           }}
-          aria-label="Open enlarged media view"
+          aria-label="Enlarge media"
         >
-          {renderSlide(slide, { videoRef })}
+          {renderCarouselSlide(slide)}
         </div>
-        {renderControls()}
-      </div>
-
-      {expanded && (
-        <div
-          className="project-media-lightbox"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Project media"
-          onClick={closeLightbox}
-        >
-          <div
-            className="project-media-lightbox-panel"
-            onClick={(e) => e.stopPropagation()}
-          >
+        {showControls && (
+          <div className="project-media-carousel-controls">
             <button
               type="button"
-              className="project-media-lightbox-close"
-              onClick={closeLightbox}
-              aria-label="Close"
+              className="project-media-carousel-btn"
+              onClick={() => go(index - 1)}
+              aria-label="Previous slide"
             >
-              ×
+              ←
             </button>
-            <div className="project-media-lightbox-viewport">
-              <div
-                key={`${index}-${slide.src}`}
-                className="project-media-lightbox-slide"
-              >
-                {renderSlide(slide, { large: true, videoRef: lightboxVideoRef })}
-              </div>
+            <div className="project-media-carousel-dots" role="tablist">
+              {slides.map((s, i) => (
+                <button
+                  key={`${s.kind}-${s.src}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === index}
+                  aria-label={s.kind === "video" ? "Video" : `Image ${i + 1}`}
+                  className={`project-media-carousel-dot${i === index ? " is-active" : ""}`}
+                  onClick={() => setIndex(i)}
+                />
+              ))}
             </div>
-            {renderControls("project-media-carousel-controls project-media-carousel-controls--lightbox")}
+            <button
+              type="button"
+              className="project-media-carousel-btn"
+              onClick={() => go(index + 1)}
+              aria-label="Next slide"
+            >
+              →
+            </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+      {zoomLayer}
     </>
   );
 }

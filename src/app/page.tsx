@@ -16,7 +16,7 @@ export default function Home() {
       <main className="main-content">
         <div className="timeline-intro fade-in">
           <h1>
-            A collection of things I&apos;ve built, explored, and shipped.
+            Projects i've built, explored, and shipped.
           </h1>
           <p>{projects.length} projects</p>
         </div>

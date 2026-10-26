@@ -97,6 +97,7 @@ export default async function ProjectPage({ params }: Props) {
             images={project.images}
             video={project.video}
             videos={project.videos}
+            mediaZoom={project.mediaZoom}
           />
         )}
       </main>
