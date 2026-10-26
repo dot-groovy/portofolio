@@ -16,27 +16,10 @@
   },
   {
     "id": "002",
-    "title": "Weather CLI",
-    "description": "A minimalist command-line weather tool written in Go. Fetches data from OpenWeather API and displays it with ASCII art.",
-    "tags": ["Go", "CLI"],
-    "date": "2025-11-20",
-    "github": "https://github.com/example/weather-cli"
-  },
-  {
-    "id": "003",
-    "title": "Note App",
-    "description": "Full-stack note-taking application with real-time sync, markdown support, and offline capabilities using service workers.",
-    "tags": ["Next.js", "PostgreSQL", "TypeScript"],
-    "date": "2025-08-15",
-    "url": "https://example.com/notes",
-    "github": "https://github.com/example/notes"
-  },
-  {
-    "id": "004",
-    "title": "Pixel Art Editor",
-    "description": "Browser-based pixel art editor with layers, animation timeline, and export to PNG/GIF. Built with Canvas API.",
-    "tags": ["TypeScript", "Canvas API"],
-    "date": "2025-05-02",
-    "github": "https://github.com/example/pixel"
+    "title": "LocalApp",
+    "description": "Privacy-first Expo mobile app that tracks your day in the background: GPS routes, visit duration, and walking vs driving detection. Data stays on-device in SQLite (no server). Includes timeline, map with routes, daily summaries, and dashboard charts. Resumes tracking after reboot via background location tasks.",
+    "tags": ["Expo", "React Native", "TypeScript", "SQLite", "GPS"],
+    "date": "2026-06",
+    "github": "https://github.com/dot-groovy/mobileLocalapp"
   }
 ]
