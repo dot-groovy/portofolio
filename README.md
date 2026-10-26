@@ -8,4 +8,4 @@ Portfolio simples e rapida exploracao. Em TypeScript com Next.js.
 npm install
 npm run dev
 ```
-https://dot-groovy.github.io/portofolio.ts/
+https://dot-groovy.github.io/portofolio/
